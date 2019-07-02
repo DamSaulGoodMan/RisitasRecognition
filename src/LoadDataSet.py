@@ -1,10 +1,12 @@
-import os
+from keras.preprocessing.image import ImageDataGenerator
+
+train_valid_data = ImageDataGenerator()
+test_valid_data = ImageDataGenerator()
+
+train_unavailable_data = ImageDataGenerator()
+test_unavailable_data = ImageDataGenerator()
 
 
-def load_from_dir(dir_name, is_from_valid_data_set):
-	return {[is_from_valid_data_set, file] for file in os.listdir(dir_name)}
-
-
-def get_data_test(dir_valid_data_set, dir_invalid_data_test):
-	return load_from_dir(dir_valid_data_set, True).union(load_from_dir(dir_invalid_data_test, False))
-
+def load_from_dir(generator_data_type, dir_name):
+	return generator_data_type\
+			.flow_from_directory(dir_name, target_size=(136, 102), batch_size=32, class_mode="binary")
