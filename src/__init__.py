@@ -1,38 +1,51 @@
-from keras.models import Sequential
-from keras.layers import Conv2D
-from keras.layers import MaxPooling2D
-from keras.layers import Flatten
-from keras.layers import Dense
+from time import time
 
+from keras import optimizers
+from keras.models import Sequential
+from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from keras.callbacks import TensorBoard
 from keras.preprocessing.image import ImageDataGenerator
 
-train_valid_data = ImageDataGenerator()
-test_valid_data = ImageDataGenerator()
+train_data = ImageDataGenerator(rescale=1. / 255,
+                                shear_range=0.2,
+                                zoom_range=0.2,
+                                horizontal_flip=True)
+validation_data = ImageDataGenerator(rescale=1. / 255)
 
-train_unavailable_data = ImageDataGenerator()
-test_unavailable_data = ImageDataGenerator()
+neurones_model = Sequential()
 
 
 def load_from_dir(generator_data_type, dir_name):
-	return generator_data_type.flow_from_directory(dir_name, target_size=(136, 102), batch_size=1, class_mode="binary")
+	return generator_data_type.flow_from_directory(dir_name, target_size=(136, 102), batch_size=64, class_mode="binary")
 
 
-neurones_model = Sequential()
+def add_neurone_layer(list_layer_spec):
+	for layer_spec in list_layer_spec:
+		neurones_model.add(Dense(activation=layer_spec[0], units=layer_spec[1]))
+
 
 neurones_model.add(Conv2D(32, (3, 3), input_shape=(136, 102, 3), activation="relu"))
 neurones_model.add(MaxPooling2D(pool_size=(2, 2)))
 neurones_model.add(Flatten())
 
-neurones_model.add(Dense(activation="relu", units=128))
-neurones_model.add(Dense(activation="sigmoid", units=1))
+add_neurone_layer([["sigmoid", 128], ["sigmoid", 128], ["sigmoid", 1]])
 
-neurones_model.compile(optimizer="rmsprop", loss="binary_crossentropy", metrics=["accuracy"])
+sgd = optimizers.SGD(lr=0.01, decay=0.0, momentum=0.0, nesterov=False)
 
-trains = load_from_dir(train_valid_data, "DataSet/Risitas/Training")
-print(trains.filenames)
+# logs with otimizer="rmsprop" : 392986
+neurones_model.compile(optimizer=sgd, loss="binary_crossentropy", metrics=["accuracy"])
 
-neurones_model.fit_generator(load_from_dir(train_valid_data, "DataSet/Risitas/Training"),
-                             steps_per_epoch=100,
-                             epochs=10,
-                             validation_data=load_from_dir(test_valid_data, "DataSet/Risitas/Test"),
-                             validation_steps=100)
+trains = load_from_dir(train_data, "data/train")
+validations = load_from_dir(train_data, "data/validation")
+
+# To run tensorboard web app $> tensorboard --logdir=logs/
+tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
+
+neurones_model.fit_generator(trains,
+                             steps_per_epoch=400,
+                             epochs=50,
+                             validation_data=validations,
+                             validation_steps=75,
+                             callbacks=[tensorboard])
+
+neurones_model.save_weights('model/save_' + str(time()) + '.h5')
