@@ -28,7 +28,7 @@ neurones_model.add(Conv2D(32, (3, 3), input_shape=(136, 102, 3), activation="rel
 neurones_model.add(MaxPooling2D(pool_size=(2, 2)))
 neurones_model.add(Flatten())
 
-add_neurone_layer([["sigmoid", 128], ["sigmoid", 128], ["sigmoid", 1]])
+add_neurone_layer([["sigmoid", 64], ["sigmoid", 128], ["sigmoid", 128], ["sigmoid", 1]])
 
 sgd = optimizers.SGD(lr=0.01, decay=0.0, momentum=0.0, nesterov=False)
 
@@ -43,7 +43,7 @@ tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 
 neurones_model.fit_generator(trains,
                              steps_per_epoch=400,
-                             epochs=50,
+                             epochs=100,
                              validation_data=validations,
                              validation_steps=75,
                              callbacks=[tensorboard])
