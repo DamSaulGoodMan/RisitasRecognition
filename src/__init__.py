@@ -71,126 +71,126 @@ def run_training(optimizer_used, name_for_export):
 
 
 # Firs Model with one neurone
-def shape_linear_model():
-    neurones_model.add(Conv2D(16, (1, 1), strides=(2, 2),
-                              input_shape=(136, 102, 3),
-                              kernel_initializer=kernel_init,
-                              kernel_regularizer=l2(kernel_reg), activation="relu"))
-    neurones_model.add(Flatten())
-
-    add_neurone_layer([["sigmoid", 1]])
-
-
-neurones_model = Sequential()
-data = init_data()
-shape_linear_model()
-run_training("adam", "linear_model")
-
-
-# Second Model with one deep layer
-def shape_one_deep_layer_model():
-    neurones_model.add(Conv2D(16, (1, 1), strides=(2, 2),
-                              input_shape=(136, 102, 3),
-                              kernel_initializer=kernel_init,
-                              kernel_regularizer=l2(kernel_reg), activation="relu"))
-    neurones_model.add(Flatten())
-
-    add_neurone_layer([["sigmoid", 128]])
-    add_neurone_layer([["sigmoid", 1]])
-
-
-neurones_model = Sequential()
-data = init_data()
-shape_one_deep_layer_model()
-run_training("adam", "one_deepLayer_model")
-
-
-# More complex model with a Conv2D layer and one deepLayer of 128 neurones!
-def shape_with_one_conv2d_model():
-    neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
-                              input_shape=(136, 102, 3),
-                              kernel_initializer=kernel_init,
-                              kernel_regularizer=l2(kernel_reg), activation="relu"))
-    neurones_model.add(Flatten())
-
-    add_neurone_layer([["sigmoid", 256]])
-    add_neurone_layer([["sigmoid", 1]])
-
-
-neurones_model = Sequential()
-data = init_data()
-shape_with_one_conv2d_model()
-run_training("adam", "second_conv2d_more_deepLayer_model")
-
-
-# Complex model with 3 Conv2D and one layer of 256 neurones!
-def shape_complex_model():
-    neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
-                              input_shape=(136, 102, 3),
-                              kernel_initializer=kernel_init,
-                              kernel_regularizer=l2(kernel_reg), activation="relu"))
-
-    con2d_add(32)
-    con2d_add(64)
-    neurones_model.add(Flatten())
-
-    add_neurone_layer([["sigmoid", 256]])
-    neurones_model.add(BatchNormalization())
-    neurones_model.add(Dropout(0.2))
-
-    add_neurone_layer([["sigmoid", 1]])
-
-
-neurones_model = Sequential()
-data = init_data()
-shape_complex_model()
-run_training("adam", "complex_model")
-
-
-# Complex model with 3 Conv2D and one layer of 256 neurones!
-def shape_complex_without_batch_normalization_model():
-    neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
-                              input_shape=(136, 102, 3),
-                              kernel_initializer=kernel_init,
-                              kernel_regularizer=l2(kernel_reg), activation="relu"))
-
-    con2d_add(32)
-    con2d_add(64)
-    neurones_model.add(Flatten())
-
-    add_neurone_layer([["sigmoid", 256]])
-    neurones_model.add(Dropout(0.2))
-    add_neurone_layer([["sigmoid", 1]])
-
-
-neurones_model = Sequential()
-data = init_data()
-shape_complex_without_batch_normalization_model()
-run_training("adam", "complex_without_batch_normalization_model")
-
-
-# Complex model with 3 Conv2D and one layer of 256 neurones!
-def shape_complex_with_sgd_model():
-    neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
-                              input_shape=(136, 102, 3),
-                              kernel_initializer=kernel_init,
-                              kernel_regularizer=l2(kernel_reg), activation="relu"))
-
-    con2d_add(32)
-    con2d_add(64)
-    neurones_model.add(Flatten())
-
-    add_neurone_layer([["sigmoid", 256]])
-    neurones_model.add(BatchNormalization())
-    neurones_model.add(Dropout(0.2))
-
-    add_neurone_layer([["sigmoid", 1]])
-
-
-neurones_model = Sequential()
-data = init_data()
-shape_complex_with_sgd_model()
-run_training(optimizers.SGD(lr=0.01, decay=0.0, momentum=0.0, nesterov=False), "complex_with_sgd_model")
+# def shape_linear_model():
+#     neurones_model.add(Conv2D(16, (1, 1), strides=(2, 2),
+#                               input_shape=(136, 102, 3),
+#                               kernel_initializer=kernel_init,
+#                               kernel_regularizer=l2(kernel_reg), activation="relu"))
+#     neurones_model.add(Flatten())
+#
+#     add_neurone_layer([["sigmoid", 1]])
+#
+#
+# neurones_model = Sequential()
+# data = init_data()
+# shape_linear_model()
+# run_training("adam", "linear_model")
+#
+#
+# # Second Model with one deep layer
+# def shape_one_deep_layer_model():
+#     neurones_model.add(Conv2D(16, (1, 1), strides=(2, 2),
+#                               input_shape=(136, 102, 3),
+#                               kernel_initializer=kernel_init,
+#                               kernel_regularizer=l2(kernel_reg), activation="relu"))
+#     neurones_model.add(Flatten())
+#
+#     add_neurone_layer([["sigmoid", 128]])
+#     add_neurone_layer([["sigmoid", 1]])
+#
+#
+# neurones_model = Sequential()
+# data = init_data()
+# shape_one_deep_layer_model()
+# run_training("adam", "one_deepLayer_model")
+#
+#
+# # More complex model with a Conv2D layer and one deepLayer of 128 neurones!
+# def shape_with_one_conv2d_model():
+#     neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
+#                               input_shape=(136, 102, 3),
+#                               kernel_initializer=kernel_init,
+#                               kernel_regularizer=l2(kernel_reg), activation="relu"))
+#     neurones_model.add(Flatten())
+#
+#     add_neurone_layer([["sigmoid", 256]])
+#     add_neurone_layer([["sigmoid", 1]])
+#
+#
+# neurones_model = Sequential()
+# data = init_data()
+# shape_with_one_conv2d_model()
+# run_training("adam", "second_conv2d_more_deepLayer_model")
+#
+#
+# # Complex model with 3 Conv2D and one layer of 256 neurones!
+# def shape_complex_model():
+#     neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
+#                               input_shape=(136, 102, 3),
+#                               kernel_initializer=kernel_init,
+#                               kernel_regularizer=l2(kernel_reg), activation="relu"))
+#
+#     con2d_add(32)
+#     con2d_add(64)
+#     neurones_model.add(Flatten())
+#
+#     add_neurone_layer([["sigmoid", 256]])
+#     neurones_model.add(BatchNormalization())
+#     neurones_model.add(Dropout(0.2))
+#
+#     add_neurone_layer([["sigmoid", 1]])
+#
+#
+# neurones_model = Sequential()
+# data = init_data()
+# shape_complex_model()
+# run_training("adam", "complex_model")
+#
+#
+# # Complex model with 3 Conv2D and one layer of 256 neurones!
+# def shape_complex_without_batch_normalization_model():
+#     neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
+#                               input_shape=(136, 102, 3),
+#                               kernel_initializer=kernel_init,
+#                               kernel_regularizer=l2(kernel_reg), activation="relu"))
+#
+#     con2d_add(32)
+#     con2d_add(64)
+#     neurones_model.add(Flatten())
+#
+#     add_neurone_layer([["sigmoid", 256]])
+#     neurones_model.add(Dropout(0.2))
+#     add_neurone_layer([["sigmoid", 1]])
+#
+#
+# neurones_model = Sequential()
+# data = init_data()
+# shape_complex_without_batch_normalization_model()
+# run_training("adam", "complex_without_batch_normalization_model")
+#
+#
+# # Complex model with 3 Conv2D and one layer of 256 neurones!
+# def shape_complex_with_sgd_model():
+#     neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
+#                               input_shape=(136, 102, 3),
+#                               kernel_initializer=kernel_init,
+#                               kernel_regularizer=l2(kernel_reg), activation="relu"))
+#
+#     con2d_add(32)
+#     con2d_add(64)
+#     neurones_model.add(Flatten())
+#
+#     add_neurone_layer([["sigmoid", 256]])
+#     neurones_model.add(BatchNormalization())
+#     neurones_model.add(Dropout(0.2))
+#
+#     add_neurone_layer([["sigmoid", 1]])
+#
+#
+# neurones_model = Sequential()
+# data = init_data()
+# shape_complex_with_sgd_model()
+# run_training(optimizers.SGD(lr=0.01, decay=0.0, momentum=0.0, nesterov=False), "complex_with_sgd_model")
 
 
 # Complex model with 4 Conv2D and one layer of 256 neurones!
