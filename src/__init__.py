@@ -67,7 +67,7 @@ def run_training(optimizer_used, name_for_export):
                                  validation_steps=75,
                                  callbacks=[tensorboard])
 
-    neurones_model.save_weights('model/save_' + name_for_export + str(time()) + '.h5')
+    neurones_model.save('model/save_' + name_for_export + str(time()) + '.hdf5')
 
 
 # Firs Model with one neurone
