@@ -20,7 +20,11 @@
     <button class="file-upload-btn" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Add Image</button>
 
     <div class="image-upload-wrap">
-        <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+        <form id="upload-file" method="post" enctype="multipart/form-data" >
+            <fieldset>
+                <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+            </fieldset>
+        </form>
         <div class="drag-text">
             <h3>Drag and drop a file or select add Image</h3>
         </div>
@@ -31,7 +35,7 @@
             <button type="button" onclick="removeUpload()" class="remove-image">Remove <span class="image-title">Uploaded Image</span></button>
             <br>
             <br>
-            <button class="file-upload-btn" type="button" onclick="zer_partiiii">IS THHAT ISSOUU ??</button>
+            <button class="file-upload-btn" type="button" onclick="modelEvaluate()">IS THHAT ISSOUU ??</button>
         </div>
     </div>
 </div>

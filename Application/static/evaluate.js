@@ -47,16 +47,17 @@ $('.image-upload-wrap').bind('dragleave', function () {
     $('.image-upload-wrap').removeClass('image-dropping');
 });
 
-function evaluate() {
-    var form = $('file-upload-image').get(0);
-    var formData = new FormData(form);// get the form data
-    // on envoi formData vers mail.php
+function modelEvaluate() {
+   var file    = document.querySelector('input[type=file]').files[0];
+    var form_data = new FormData();
+    form_data.append('file', file);
+    console.log(form_data);
     $.ajax({
         type		: 'POST', // define the type of HTTP verb we want to use (POST for our form)
-        url		: 'http://127.0.0.1:5000/evaluate (', // the url where we want to POST
-        data		: formData, // our data object
-        dataType	: 'json', // what type of data do we expect back from the server
+        url		: 'http://127.0.0.1:5000/evaluate', // the url where we want to POST
+        data		: form_data, // our data object
+        contentType: false,
+        cache: false,
         processData: false,
-        contentType: false
     })
 }
