@@ -8,11 +8,10 @@ from flask import request
 
 app = Flask(__name__)
 def load_image(img_path, show=False):
-    img = image.load_img(img_path, target_size=(150, 150))
+    img = image.load_img(img_path, target_size=(136, 102))
     img_tensor = image.img_to_array(img)          # (height, width, channels)
     img_tensor = np.expand_dims(img_tensor, axis=0)         # (1, height, width, channels), add a dimension because the model expects this shape: (batch_size, height, width, channels)
     img_tensor /= 255.                                      # imshow expects values in the range [0, 1]
-    img_tensor = image.resize_images(img_tensor, (224, 224))
     if show:
         plt.imshow(img_tensor[0])
         plt.axis('off')
@@ -27,11 +26,11 @@ def home():
 
 @app.route("/evaluate", methods = ['POST'])
 def evaluate():
-     request_file = request.files['file']
      model = load_model("../model/save_last_complex_model1563649896.9996808.hdf5")
+     request_file = request.files['file']
      img = load_image(request_file)
      pred = model.predict(img)
-
+     print(pred)
      return "{code:true}"
 if __name__ == "__main__":
     app.run(debug=True)
