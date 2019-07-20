@@ -1,0 +1,13 @@
+
+>> Dropout
+> Technique de régularisation qui consiste à ignorer un certain nombre de neurones (en les désactivant)
+lors de l'entrainement.
+> Réduit le risque d'overflow en augmentant la capacité du modèle à généraliser
+> Arg : pourcentage de change de désactiver un neurone
+
+>> BatchNormalization
+> Normalise les data set pour éviter d'avoir une reconnaissance biaisé par un paramètre non déterministe
+dans notre cas (exemple: couleur de font d'image, luminositée, ...)
+
+>> Flatten
+> Réarange un modèle en 2d/3d en un modèle 1d
