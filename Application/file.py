@@ -6,6 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from flask import request
 
+model = load_model("../model/save_last_complex_model1563649896.9996808.hdf5")
+model._make_predict_function()
 app = Flask(__name__)
 def load_image(img_path, show=False):
     img = image.load_img(img_path, target_size=(136, 102))
@@ -20,13 +22,13 @@ def load_image(img_path, show=False):
     return img_tensor
 
 
+
 @app.route("/")
 def home():
     return render_template('index.html')
 
 @app.route("/evaluate", methods = ['POST'])
 def evaluate():
-     model = load_model("../model/save_last_complex_model1563649896.9996808.hdf5")
      request_file = request.files['file']
      img = load_image(request_file)
      pred = model.predict(img)
