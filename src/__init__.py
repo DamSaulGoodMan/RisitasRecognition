@@ -1,38 +1,86 @@
+from time import time
+
+from keras import optimizers
 from keras.models import Sequential
-from keras.layers import Conv2D
-from keras.layers import MaxPooling2D
-from keras.layers import Flatten
-from keras.layers import Dense
-
+from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, BatchNormalization, Dropout
+from keras.callbacks import TensorBoard
 from keras.preprocessing.image import ImageDataGenerator
-
-train_valid_data = ImageDataGenerator()
-test_valid_data = ImageDataGenerator()
-
-train_unavailable_data = ImageDataGenerator()
-test_unavailable_data = ImageDataGenerator()
+from keras.regularizers import l2
 
 
-def load_from_dir(generator_data_type, dir_name):
-	return generator_data_type.flow_from_directory(dir_name, target_size=(136, 102), batch_size=1, class_mode="binary")
-
+train_data = ImageDataGenerator(rescale=1. / 255,
+                                shear_range=0.2,
+                                zoom_range=0.2,
+                                horizontal_flip=True)
+validation_data = ImageDataGenerator(rescale=1. / 255)
 
 neurones_model = Sequential()
 
-neurones_model.add(Conv2D(32, (3, 3), input_shape=(136, 102, 3), activation="relu"))
-neurones_model.add(MaxPooling2D(pool_size=(2, 2)))
+
+def load_from_dir(generator_data_type, dir_name):
+	return generator_data_type.flow_from_directory(dir_name, target_size=(136, 102), batch_size=64, class_mode="binary")
+
+kernel_init = "glorot_uniform"
+kernel_reg = 0.0001
+axis_value = 1
+
+
+def add_neurone_layer(list_layer_spec):
+	for layer_spec in list_layer_spec:
+		neurones_model.add(Dense(activation=layer_spec[0], units=layer_spec[1], kernel_initializer=kernel_init))
+
+
+def con2d_add(kernel_size):
+	neurones_model.add(Conv2D(kernel_size, (2, 2),
+	                          padding="same",
+	                          kernel_initializer=kernel_init,
+	                          kernel_regularizer=l2(kernel_reg),
+	                          activation="relu"))
+
+	neurones_model.add(BatchNormalization(axis=axis_value))
+
+	neurones_model.add(Conv2D(kernel_size, (2, 2),
+	                          padding="same",
+	                          kernel_initializer=kernel_init,
+	                          kernel_regularizer=l2(kernel_reg),
+	                          strides=(2, 2),
+	                          activation="relu"))
+	neurones_model.add(BatchNormalization(axis=axis_value))
+	neurones_model.add(Dropout(0.25))
+
+neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
+                          input_shape=(136, 102, 3),
+                          kernel_initializer=kernel_init,
+                          kernel_regularizer=l2(kernel_reg), activation="relu"))
+
+con2d_add(32)
+con2d_add(64)
+con2d_add(128)
 neurones_model.add(Flatten())
 
-neurones_model.add(Dense(activation="relu", units=128))
-neurones_model.add(Dense(activation="sigmoid", units=1))
+add_neurone_layer([["sigmoid", 256]])
+neurones_model.add(BatchNormalization())
+neurones_model.add(Dropout(0.5))
 
-neurones_model.compile(optimizer="rmsprop", loss="binary_crossentropy", metrics=["accuracy"])
+add_neurone_layer([["sigmoid", 1]])
 
-trains = load_from_dir(train_valid_data, "DataSet/Risitas/Training")
-print(trains.filenames)
 
-neurones_model.fit_generator(load_from_dir(train_valid_data, "DataSet/Risitas/Training"),
-                             steps_per_epoch=100,
-                             epochs=10,
-                             validation_data=load_from_dir(test_valid_data, "DataSet/Risitas/Test"),
-                             validation_steps=100)
+sgd = optimizers.SGD(lr=0.01, decay=0.0, momentum=0.0, nesterov=False)
+
+# logs with otimizer="rmsprop" : 392986
+neurones_model.compile(optimizer=sgd, loss="binary_crossentropy", metrics=["accuracy"])
+
+trains = load_from_dir(train_data, "data/train")
+validations = load_from_dir(train_data, "data/validation")
+
+# To run tensorboard web app $> tensorboard --logdir=logs/
+tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
+
+neurones_model.fit_generator(trains,
+                             steps_per_epoch=200,
+                             epochs=150,
+                             validation_data=validations,
+                             validation_steps=100,
+                             callbacks=[tensorboard])
+
+neurones_model.save_weights('model/save_' + str(time()) + '.h5')
