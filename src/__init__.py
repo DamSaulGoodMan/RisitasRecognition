@@ -58,13 +58,13 @@ def run_training(optimizer_used, name_for_export):
     validations = load_from_dir(data[1], "data/validation")
 
     # To run tensorboard web app $> tensorboard --logdir=logs/
-    tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
+    tensorboard = TensorBoard(log_dir="logs/{}".format(time()) + name_for_export)
 
     neurones_model.fit_generator(trains,
                                  steps_per_epoch=150,
-                                 epochs=60,
+                                 epochs=40,
                                  validation_data=validations,
-                                 validation_steps=75,
+                                 validation_steps=100,
                                  callbacks=[tensorboard])
 
     neurones_model.save('model/save_' + name_for_export + str(time()) + '.hdf5')
@@ -95,7 +95,7 @@ def run_training(optimizer_used, name_for_export):
 #                               kernel_regularizer=l2(kernel_reg), activation="relu"))
 #     neurones_model.add(Flatten())
 #
-#     add_neurone_layer([["sigmoid", 128]])
+#     add_neurone_layer([["sigmoid", 64]])
 #     add_neurone_layer([["sigmoid", 1]])
 #
 #
@@ -105,7 +105,7 @@ def run_training(optimizer_used, name_for_export):
 # run_training("adam", "one_deepLayer_model")
 #
 #
-# # More complex model with a Conv2D layer and one deepLayer of 128 neurones!
+# # More complex model with a Conv2D layer and one deepLayer of 64*2 neurones!
 # def shape_with_one_conv2d_model():
 #     neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
 #                               input_shape=(136, 102, 3),
@@ -113,7 +113,8 @@ def run_training(optimizer_used, name_for_export):
 #                               kernel_regularizer=l2(kernel_reg), activation="relu"))
 #     neurones_model.add(Flatten())
 #
-#     add_neurone_layer([["sigmoid", 256]])
+#     add_neurone_layer([["sigmoid", 64]])
+#     add_neurone_layer([["sigmoid", 64]])
 #     add_neurone_layer([["sigmoid", 1]])
 #
 #
@@ -123,7 +124,7 @@ def run_training(optimizer_used, name_for_export):
 # run_training("adam", "second_conv2d_more_deepLayer_model")
 #
 #
-# # Complex model with 3 Conv2D and one layer of 256 neurones!
+# # Complex model with 3 Conv2D and one layer of 64*2 neurones!
 # def shape_complex_model():
 #     neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
 #                               input_shape=(136, 102, 3),
@@ -134,7 +135,8 @@ def run_training(optimizer_used, name_for_export):
 #     con2d_add(64)
 #     neurones_model.add(Flatten())
 #
-#     add_neurone_layer([["sigmoid", 256]])
+#     add_neurone_layer([["sigmoid", 64]])
+#     add_neurone_layer([["sigmoid", 64]])
 #     neurones_model.add(BatchNormalization())
 #     neurones_model.add(Dropout(0.2))
 #
@@ -147,7 +149,7 @@ def run_training(optimizer_used, name_for_export):
 # run_training("adam", "complex_model")
 #
 #
-# # Complex model with 3 Conv2D and one layer of 256 neurones!
+# # Complex model with 3 Conv2D and one layer of 64*2 neurones!
 # def shape_complex_without_batch_normalization_model():
 #     neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
 #                               input_shape=(136, 102, 3),
@@ -158,7 +160,8 @@ def run_training(optimizer_used, name_for_export):
 #     con2d_add(64)
 #     neurones_model.add(Flatten())
 #
-#     add_neurone_layer([["sigmoid", 256]])
+#     add_neurone_layer([["sigmoid", 64]])
+#     add_neurone_layer([["sigmoid", 64]])
 #     neurones_model.add(Dropout(0.2))
 #     add_neurone_layer([["sigmoid", 1]])
 #
@@ -169,7 +172,7 @@ def run_training(optimizer_used, name_for_export):
 # run_training("adam", "complex_without_batch_normalization_model")
 #
 #
-# # Complex model with 3 Conv2D and one layer of 256 neurones!
+# # Complex model with 3 Conv2D and one layer of 64*2 neurones!
 # def shape_complex_with_sgd_model():
 #     neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
 #                               input_shape=(136, 102, 3),
@@ -180,7 +183,7 @@ def run_training(optimizer_used, name_for_export):
 #     con2d_add(64)
 #     neurones_model.add(Flatten())
 #
-#     add_neurone_layer([["sigmoid", 256]])
+#     add_neurone_layer([["sigmoid", 64]])
 #     neurones_model.add(BatchNormalization())
 #     neurones_model.add(Dropout(0.2))
 #
@@ -191,21 +194,121 @@ def run_training(optimizer_used, name_for_export):
 # data = init_data()
 # shape_complex_with_sgd_model()
 # run_training(optimizers.SGD(lr=0.01, decay=0.0, momentum=0.0, nesterov=False), "complex_with_sgd_model")
+#
+#
+# def shape_complex_with_sgd_2_model():
+#     neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
+#                               input_shape=(136, 102, 3),
+#                               kernel_initializer=kernel_init,
+#                               kernel_regularizer=l2(kernel_reg), activation="relu"))
+#
+#     con2d_add(32)
+#     con2d_add(64)
+#     neurones_model.add(Flatten())
+#
+#     add_neurone_layer([["sigmoid", 64]])
+#     add_neurone_layer([["sigmoid", 64]])
+#     neurones_model.add(BatchNormalization())
+#     neurones_model.add(Dropout(0.2))
+#
+#     add_neurone_layer([["sigmoid", 1]])
+#
+#
+# neurones_model = Sequential()
+# data = init_data()
+# shape_complex_with_sgd_2_model()
+# run_training(optimizers.SGD(lr=0.01, decay=0.0, momentum=0.0, nesterov=False), "complex_with_sgd_2_model")
+#
+#
+# # Complex model with 4 Conv2D and one layer of 64*2 neurones!
+# def shape_last_model():
+#     neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
+#                               input_shape=(136, 102, 3),
+#                               kernel_initializer=kernel_init,
+#                               kernel_regularizer=l2(kernel_reg), activation="relu"))
+#
+#     con2d_add(32)
+#     con2d_add(64)
+#     con2d_add(128)
+#     neurones_model.add(Flatten())
+#
+#     add_neurone_layer([["sigmoid", 64]])
+#     neurones_model.add(BatchNormalization())
+#     neurones_model.add(Dropout(0.5))
+#
+#     add_neurone_layer([["sigmoid", 1]])
+#
+#
+# neurones_model = Sequential()
+# data = init_data()
+# shape_last_model()
+# run_training("adam", "last_complex_model")
+#
+#
+# def shape_last_2_model():
+#     neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
+#                               input_shape=(136, 102, 3),
+#                               kernel_initializer=kernel_init,
+#                               kernel_regularizer=l2(kernel_reg), activation="relu"))
+#
+#     con2d_add(32)
+#     con2d_add(64)
+#     con2d_add(128)
+#     neurones_model.add(Flatten())
+#
+#     add_neurone_layer([["sigmoid", 64]])
+#     add_neurone_layer([["sigmoid", 64]])
+#     neurones_model.add(BatchNormalization())
+#     neurones_model.add(Dropout(0.5))
+#
+#     add_neurone_layer([["sigmoid", 1]])
+#
+#
+# neurones_model = Sequential()
+# data = init_data()
+# shape_last_2_model()
+# run_training("adam", "last_complex_2_model")
 
 
-# Complex model with 4 Conv2D and one layer of 256 neurones!
-def shape_last_model():
-    neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
+# def shape_model():
+#     neurones_model.add(Conv2D(16, (3, 3), strides=(2, 2),
+#                               input_shape=(136, 102, 3),
+#                               kernel_initializer=kernel_init,
+#                               kernel_regularizer=l2(kernel_reg), activation="relu"))
+#
+#     # con2d_add(32)
+#     # con2d_add(64)
+#     # con2d_add(128)
+#     neurones_model.add(Flatten())
+#
+#     add_neurone_layer([["sigmoid", 16]])
+#     add_neurone_layer([["sigmoid", 16]])
+#     neurones_model.add(BatchNormalization())
+#     neurones_model.add(Dropout(0.5))
+#
+#     add_neurone_layer([["sigmoid", 1]])
+#
+#
+# neurones_model = Sequential()
+# data = init_data()
+# shape_model()
+# run_training("adam", "2deepLayer_16_1_conv2d_model")
+
+
+def shape_model():
+    neurones_model.add(Conv2D(16, (2, 2), strides=(2, 2),
                               input_shape=(136, 102, 3),
                               kernel_initializer=kernel_init,
                               kernel_regularizer=l2(kernel_reg), activation="relu"))
 
     con2d_add(32)
     con2d_add(64)
-    con2d_add(128)
+    # con2d_add(128)
     neurones_model.add(Flatten())
 
-    add_neurone_layer([["sigmoid", 256]])
+    add_neurone_layer([["sigmoid", 8]])
+    add_neurone_layer([["sigmoid", 16]])
+    add_neurone_layer([["sigmoid", 32]])
     neurones_model.add(BatchNormalization())
     neurones_model.add(Dropout(0.5))
 
@@ -214,8 +317,8 @@ def shape_last_model():
 
 neurones_model = Sequential()
 data = init_data()
-shape_last_model()
-run_training("adam", "last_complex_model")
+shape_model()
+run_training("adam", "3deepLayer_4_8_16_3conv2d_model")
 
 # sgd = optimizers.SGD(lr=0.01, decay=0.0, momentum=0.0, nesterov=False)
 # logs with optimizer="rmsprop" : <= 392986
