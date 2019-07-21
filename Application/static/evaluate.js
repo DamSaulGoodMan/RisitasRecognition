@@ -48,11 +48,16 @@ $('.image-upload-wrap').bind('dragleave', function () {
 });
 
 function modelEvaluate() {
+    var span = document.getElementsByClassName("close")[0];
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    var modal = document.getElementById("myModal");
    var file    = document.querySelector('input[type=file]').files[0];
     var form_data = new FormData();
     form_data.append('file', file);
     console.log(form_data);
-    $.ajax({
+    var request = $.ajax({
         type		: 'POST', // define the type of HTTP verb we want to use (POST for our form)
         url		: 'http://127.0.0.1:5000/evaluate', // the url where we want to POST
         data		: form_data, // our data object
@@ -60,4 +65,28 @@ function modelEvaluate() {
         cache: false,
         processData: false,
     })
+
+    request.done(function(msg) {
+        $(".issou-loose").hide();
+        $(".issou-win").hide();
+        $(".issou-win2").hide();
+        console.log( msg );
+        var res = JSON.parse(msg);
+        var proba =parseFloat(res["proba"])*100;
+        console.log(proba);
+        modal.style.display = "block";
+        $(".result").show();
+        if(proba <50){
+            $(".issou-loose").show();
+
+        }else{
+            $(".issou-win").show();
+            $(".issou-win2").show();
+        }
+        $(".proba").text("Il y a "+proba+"% de chance que vous soyez Risitas")
+    });
+
+
 }
+
+// When the user clicks on <span> (x), close the modal

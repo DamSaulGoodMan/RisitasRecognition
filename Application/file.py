@@ -18,7 +18,6 @@ def load_image(img_path, show=False):
         plt.imshow(img_tensor[0])
         plt.axis('off')
         plt.show()
-
     return img_tensor
 
 
@@ -33,7 +32,7 @@ def evaluate():
      img = load_image(request_file)
      pred = model.predict(img)
      print(pred)
-     return "{code:true}"
+     return "{\"proba\":"+str(pred[0][0])+"}"
 if __name__ == "__main__":
     app.run(debug=True)
 
