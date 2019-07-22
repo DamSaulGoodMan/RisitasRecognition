@@ -77,13 +77,12 @@ function modelEvaluate() {
         modal.style.display = "block";
         $(".result").show();
         if(proba <50){
-            $(".issou-loose").show();
-
-        }else{
             $(".issou-win").show();
             $(".issou-win2").show();
+        }else{
+            $(".issou-loose").show();
         }
-        $(".proba").text("Il y a "+proba+"% de chance que vous soyez Risitas")
+        $(".proba").text("Il y a "+proba+"% de chance que vous ne soyez pas Risitas")
     });
 
 
